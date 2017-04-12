@@ -1,5 +1,13 @@
 language: node_js
 node_js:
-  - "7"
-  - "6"
-  - "5"
+- '7'
+- '6'
+- '5'
+deploy:
+  provider: npm
+  email: ojj11@users.noreply.github.com
+  api_key:
+    secure: ivug++HMC26F3xczZfcpNRRVbcdm1KbsZOnwrM6UMkQO/By0TN3GRveibGFl7+afE6d2sRql8DephAiRw3gUBfY4XsLVpvHxGxGvXFvtNUkEQto7FBczG7JJxhTemyDw3VwUrVqwtfoXUJltY6/48QbywvO5m/GxRZOb4gVBNqaGrqQvuFh+UAXbmGBuZ1wNU7uJf3MxY5pESk4870K4H0yNZkAnaIckRcFpNaHDrvL5eb0nnc+0+zMDSRe0VBVrLGTkP3PnjPP+qqeUg4IvL1J6bwvaTCnFqFLcYIqzgeRKpd55ANi6/+9/YPPi1AjmZHXuDcuwpPui666gwqV/liKNrDZPonp3dLIkazkqTdCEkgJUsrv1h4ue/tMyf+HfqMqK7kuHbdjxV/YrbkmbyGpEw2y5SQdEotYiYsZ5I1TT69hpTcuQTMakxfslir3WVakDegxPyQ7kT/fAn74gR4QWRsxwZ8yLGzDsRjtVA8nuL0qIhcXDaW+ayUky35zXdw6vE5a2SM79YhIHd2JdmZtucm5aN0rMCUIuSgVhTa/oArWNRPpZ6XX6RowXnW24LQKaZgKwV7YuCn5AeY4N9KoJYXrCSdDTvBSR/HjL9e7T7zJh8HrhTJhbYrXbxfVMNeFffJTneiRqzy4rczwfgulpYRqyjlWXhtcUGqc3T2A=
+  on:
+    tags: true
+    repo: ojj11/morphic
