@@ -1,4 +1,4 @@
-Morphic
+Morphic [![Build Status](https://travis-ci.org/ojj11/morphic.svg?branch=master)](https://travis-ci.org/ojj11/morphic)
 =======
 
 **Support for writing ad-hoc polymorphic functions.**
