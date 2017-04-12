@@ -18,7 +18,7 @@ npm install morphic --save
 
   > Look in [./test/implementations.js](./test/implementations.js) for more examples
 
-```
+```javascript
 var morphic = require("morphic");
 var assert = require("assert");
 
@@ -97,21 +97,36 @@ which will make its matched value explicitly available through the first
 argument to an *implementation*
 
 ##### `morphic.null([name])`
+
 Returns a matcher that matches `x == null`
+
 ##### `morphic.undefined([name])`
+
 Returns a matcher that matches `x == undefined`
+
 ##### `morphic.Object([name])`
+
 Returns a matcher that matches something that can be coerced to an Object
+
 ##### `morphic.Boolean([name])`
+
 Returns a matcher that matches something that can be coerced to a Boolean
+
 ##### `morphic.Number([name])`
+
 Returns a matcher that matches something that can be coerced to a Number
+
 ##### `morphic.String([name])`
+
 Returns a matcher that matches something that can be coerced to a String
+
 ##### `morphic.either(options, [name])`
+
 Returns a matcher that will match on any matcher expressed in the array of
 option
+
 ##### `morphic.literally(value, [name])`
+
 Returns a matcher that matches `x == value` this should be used in the
 either matcher - it is implicitly used elsewhere
 
@@ -125,28 +140,41 @@ order in which you add *implementations* doesn't matter, morphic will call the
 Assuming `myMethod` is an *instance* such as `var myMethod = new morphic()`:
 
 ##### `myMethod.with(shape1, [shape2, [shape3...]])...`
+
 Define the shape of each argument using matchers, objects and literals, ie:
 `myMethod.with("string", 123, morphic.Boolean())...` would match both
 `myMethod("string", 123, true)` and `myMethod("string", 123, false)`
+
 ##### `myMethod.with(...).then(implementation)`
+
 Calling with...then will execute the implementation when the inputs match
 the shapes given in the with call. The implementation will be called as
 `implementation(named_matchers_map, original_argument0, ...)` where the
 `named_matchers_map` will be an Object where each key in the name of the
 matcher and the value is the matched input
+
 ##### `myMethod.with(...).throw(error)`
+
 Calling with...throw will throw the given error when the input matches. The
 error must be given as an instance, such as `new Error("error message")`
+
 ##### `myMethod.with(...).return(value)`
+
 Calling with...return will return the given value when the input matches
+
 ##### `myMethod.with(...).returnArgument(n)`
+
 Calling with..returnArgument will return the specified input argument when
 the input matches. Arguments are zero indexed, so `returnArgument(0)` would
 return the first argument
+
 ##### `myMethod.with(...).returnNamedMatch(name)`
+
 Calling with...returnNamedMatch will return the value of the named matcher
 when the input matches
+
 ##### `myMethod.otherwise()...`
+
 Otherwise will let you provide a fallback implementation that will be called
 in the case that no existing implementations are suitable. Note that when
 the input matches multiple implementations and all are similarly specific
@@ -159,12 +187,12 @@ Where the above matchers aren't enough a new one can be defined using:
 
 `var myMatcher = morphic.makeMatcher((input) => return wasMatched)`
 
-`matcher` is now similar to the above matchers, use it in the same way with
+`myMatcher` is now similar to the above matchers, use it in the same way with
 `myMatcher([name])`
 
 ## Running tests
 
-    npm install --dev
+    npm install
     npm test
 
 ## Known issues
