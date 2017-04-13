@@ -1,6 +1,8 @@
 Morphic [![Build Status](https://travis-ci.org/ojj11/morphic.svg?branch=master)](https://travis-ci.org/ojj11/morphic)
 =======
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/ojj11/morphic.svg)](https://greenkeeper.io/)
+
 **Support for writing ad-hoc polymorphic functions.**
 These are functions that will accept different types of arguments. They can
 execute different sets of code depending on the shape of the information
