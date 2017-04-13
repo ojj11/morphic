@@ -1,6 +1,7 @@
-Morphic [![Build Status](https://travis-ci.org/ojj11/morphic.svg?branch=master)](https://travis-ci.org/ojj11/morphic)
+Morphic
 =======
 
+[![Build Status](https://travis-ci.org/ojj11/morphic.svg?branch=master)](https://travis-ci.org/ojj11/morphic)
 [![Greenkeeper badge](https://badges.greenkeeper.io/ojj11/morphic.svg)](https://greenkeeper.io/)
 
 **Support for writing ad-hoc polymorphic functions.**
