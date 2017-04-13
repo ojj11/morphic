@@ -4,10 +4,10 @@
   "description": "Ad-hoc polymorphism / pattern matching / destructuring for function parameters",
   "main": "morphic.js",
   "dependencies": {
-    "bitset.js": "^3.1.0"
+    "bitset.js": "^4.0.0"
   },
   "devDependencies": {
-    "mocha": "^2.3.1"
+    "mocha": "^3.2.0"
   },
   "scripts": {
     "test": "mocha"
