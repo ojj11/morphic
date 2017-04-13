@@ -23,7 +23,7 @@ function hash() {
 }
 
 function withPath(newPath) {
-  var newObj = Object.create(this);
+  var newObj = Object.assign(Object.create(matcherPrototype), this);
   newObj.path = newPath;
   return newObj;
 }
@@ -84,11 +84,9 @@ function matchUserFunction(func, uid, name, path) {
   this.path = path;
   this.typeShortcut = 4;
   this.name = name;
-  this.matcher = function(obj) {return func(obj);};
+  this.matcher = func;
   // Need to declare some form of UUID for hashing:
   this.funcUID = uid;
-  // Because we can't hash a function:
-  this.func = func;
 }
 
 matchUserFunction.prototype = matcherPrototype;

@@ -1,6 +1,7 @@
 /* @flow */
 
 var bitset = require("bitset.js");
+var util = require("util");
 
 function matcher(config) {
   config = config || {
@@ -82,7 +83,7 @@ matcher.prototype = {
           break;
           // matchUserFunction:
           case 4:
-            isMatch = record.func(subObject);
+            isMatch = record.matcher(subObject);
           break;
           // constant result (used in tests)
           case 5:
@@ -90,10 +91,7 @@ matcher.prototype = {
           break;
         }
       }
-      if (isMatch) {
-        // eliminate others
-        currentGuess = currentGuess.and(this.stackHits[question]);
-      } else {
+      if (!isMatch) {
         // eliminate this
         currentGuess = currentGuess.and(this.stackHits[question].not());
       }
@@ -111,7 +109,7 @@ matcher.prototype = {
       return this.alternative;
     }
     throw new HelpfulError(
-      currentGuess.cardinality() + " methods match on the input",
+      currentGuess.cardinality() + " methods match on the input\n" + util.inspect(object),
       currentGuess,
       this.functionPositioning);
   }

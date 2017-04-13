@@ -5,7 +5,7 @@ var morphic = require("../morphic.js");
 describe("implementations", function() {
   this.slow(5);
 
-  it("should be able to match authors", function() {
+  it("should be able to run README example", function() {
 
     var getName = new morphic();
 
@@ -44,7 +44,7 @@ describe("implementations", function() {
       "unknown");
   });
 
-  it("should be able to match AST nodes", function() {
+  it("should be able to run AST example", function() {
 
     var getIfs = new morphic();
 
@@ -87,7 +87,7 @@ describe("implementations", function() {
       ["result == false"]);
   });
 
-  it("should be able to count using custom matchers", function() {
+  it("should be able to execute counting example", function() {
 
     var isIterable = morphic.makeMatcher(function(input) {
       return input.forEach instanceof Function;
@@ -116,7 +116,7 @@ describe("implementations", function() {
     });
   });
 
-  it("should be able to check certificates", function() {
+  it("should be able to run certificate example", function() {
 
     var connection1 = {
       "remoteAddress": "https://www.example.com",
@@ -151,7 +151,9 @@ describe("implementations", function() {
     });
 
     checkCertificate.with({
-      "remoteAddress": morphic.String("url")
+      "remoteAddress": morphic.String("url"),
+      // Have to be explicit that we expect the certificate to not exist:
+      "certificate": undefined
     },
     {}).then(function(r) {
       throw new Error(r.url + " is not secure");
@@ -205,6 +207,21 @@ describe("implementations", function() {
 
     assert.ok(me.isCheckedIn(flight1));
     assert.equal(me.isCheckedIn(flight2), false);
+
+  });
+
+  it("should throw on ambigious input", function() {
+
+    var tooAmbigiousFunction = new morphic();
+
+    tooAmbigiousFunction.with("hello").return(0);
+    tooAmbigiousFunction.with(morphic.String()).return(1);
+
+    assert.throws(function() {
+      // This is both the literal "hello" and also a string, so what's the right
+      // output?
+      tooAmbigiousFunction("hello");
+    }, /2 methods match/);
 
   });
 });

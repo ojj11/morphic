@@ -41,11 +41,10 @@ describe("matcher", function() {
   });
 
   it("should select correct function", function() {
-    method.addRecord([constantly(true, ["a"])], "match1");
+    method.addRecord([constantly(true, ["a", "sub-a"])], "match1");
+    method.addRecord([constantly(true, ["b", "sub-b"])], "match2");
 
-    method.addRecord([constantly(true, ["b"])], "match2");
-
-    var result = method.getRecordFromInput({b: 2});
+    var result = method.getRecordFromInput({b: {"sub-b": 2}});
     assert.equal(result, "match2");
   });
 
