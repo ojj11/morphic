@@ -50,7 +50,7 @@ matcher.prototype = {
       question = questions.pop();
       record = this.stack[question];
       // check that doing this will reduce our search space:
-      if (this.stackHits[question].and(currentGuess).isEmpty()) {
+      if (this.stackHits[question].clone().and(currentGuess).isEmpty()) {
         // there set union is false
         continue;
       }
@@ -93,7 +93,7 @@ matcher.prototype = {
       }
       if (!isMatch) {
         // eliminate this
-        currentGuess = currentGuess.and(this.stackHits[question].not());
+        currentGuess = currentGuess.and(this.stackHits[question].clone().not());
       }
       if (currentGuess.isEmpty()) {
         // nothing matches:
