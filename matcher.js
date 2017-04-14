@@ -14,9 +14,7 @@ function matcher(config) {
   this.stackHits = Object.create(null);
   this.calls = [];
   this.functionPositioning = [];
-  this.alternative = function() {
-    throw new Error("No methods with matching input patterns were found");
-  }
+  this.alternative = undefined;
 }
 
 matcher.prototype = {
@@ -88,6 +86,14 @@ matcher.prototype = {
           // constant result (used in tests)
           case 5:
             isMatch = this.defaultMatcher(record);
+          break;
+          // matchTypeExactly:
+          case 6:
+            isMatch = typeof subObject == record.type;
+          break;
+          // matchAnything:
+          case 7:
+            isMatch = true;
           break;
         }
       }

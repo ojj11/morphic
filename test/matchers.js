@@ -6,8 +6,33 @@ var testData = {
   "matchType": {
     numberOfArguments: 1,
     arguments: [
-      'Number',
-      'String'
+      ['Number'],
+      ['String']
+    ],
+    workingData: [
+      123,
+      "123",
+      [123]
+    ],
+    brokenData: [
+      [1,2,3],
+      "hello"
+    ]
+  },
+  "matchTypeExactly": {
+    numberOfArguments: 1,
+    arguments: [
+      ["number"],
+      ["string"]
+    ],
+    workingData: [
+      123
+    ],
+    brokenData: [
+      [1,2,3],
+      "hello",
+      "123",
+      [123]
     ]
   },
   "matchEither": {
@@ -20,8 +45,26 @@ var testData = {
   "matchLiteral": {
     numberOfArguments: 1,
     arguments: [
+      ["hi"],
+      ["bye"]
+    ],
+    workingData: [
+      "hi"
+    ],
+    brokenData: [
+      "anything else"
+    ]
+  },
+  "matchAnything": {
+    numberOfArguments: 0,
+    arguments: [[], []],
+    workingData: [
       "hi",
-      "bye"
+      123,
+      undefined,
+      null,
+      {},
+      []
     ]
   },
   "matchUserFunction": {
@@ -74,11 +117,18 @@ function makeMatcher(method, index, argClass, nameClass, pathClass) {
   var args = testData[method].arguments[testInputs[argClass][index]];
   var name = testNames[nameClass][index];
   var path = testPaths[pathClass][index];
+  var matcher;
+  if (testData[method].numberOfArguments == 0) {
+    matcher = new (constructor.bind(undefined, name));
+    return matcher.withPath(path);
+  }
   if (testData[method].numberOfArguments == 1) {
-    return new (constructor.bind(undefined, args[0], name, path));
+    matcher = new (constructor.bind(undefined, args[0], name));
+    return matcher.withPath(path);
   }
   if (testData[method].numberOfArguments == 2) {
-    return new (constructor.bind(undefined, args[0], args[1], name, path));
+    matcher = new (constructor.bind(undefined, args[0], args[1], name));
+    return matcher.withPath(path);
   }
 }
 
@@ -95,10 +145,13 @@ Object.keys(testData).forEach(function(matcher) {
       ["same hash", "same inputs", "same names", "same paths"],
       ["same hash", "same inputs", "different names", "same paths"],
       ["same hash", "same inputs", "same names", "same symbolic paths"],
-      ["different hash", "different inputs", "same names", "same paths"],
       ["different hash", "same inputs", "same names", "different paths"],
       ["different hash", "same inputs", "same names", "different symbolic paths"],
     ];
+
+    if (testData[matcher].numberOfArguments > 0) {
+      tests.push(["different hash", "different inputs", "same names", "same paths"]);
+    }
 
     tests.forEach(function(test) {
       var desc = [
@@ -118,6 +171,24 @@ Object.keys(testData).forEach(function(matcher) {
         testAssertions[test[0]](m1.hash(), m2.hash());
       });
     });
+
+    if (testData[matcher].workingData) {
+      it("should match on matching data", function() {
+        var m1 = makeMatcher(matcher, 0, "same inputs", "same names", "same paths");
+        testData[matcher].workingData.forEach(function(data) {
+          assert.ok(m1.matcher(data), "data: " + data);
+        });
+      });
+    }
+
+    if (testData[matcher].brokenData) {
+      it("shouldn't match when data doesn't match", function() {
+        var m1 = makeMatcher(matcher, 0, "same inputs", "same names", "same paths");
+        testData[matcher].brokenData.forEach(function(data) {
+          assert.equal(false, m1.matcher(data), "data: " + data);
+        });
+      });
+    }
 
   });
 });

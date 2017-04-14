@@ -134,6 +134,26 @@ describe("morphic", function() {
     });
   });
 
+  it("should throw when no fallback defined", function() {
+    var morphicMethod = new morphic(options);
+
+    assert.throws(function() {
+      morphicMethod("any input");
+    },
+    /No methods/);
+
+  });
+
+  it("should specify input when no fallback found", function() {
+    var morphicMethod = new morphic(options);
+
+    assert.throws(function() {
+      morphicMethod("any input");
+    },
+    /any input/);
+
+  });
+
   it("should return object on match", function() {
     var morphicMethod = new morphic(options);
 
@@ -166,12 +186,40 @@ describe("morphic", function() {
     assert.equal(typeof morphic.String, "function");
   });
 
+  it("should expose matcher for string", function() {
+    assert.equal(typeof morphic.string, "function");
+  });
+
+  it("should expose matcher for number", function() {
+    assert.equal(typeof morphic.number, "function");
+  });
+
+  it("should expose matcher for boolean", function() {
+    assert.equal(typeof morphic.boolean, "function");
+  });
+
+  it("should expose matcher for object", function() {
+    assert.equal(typeof morphic.object, "function");
+  });
+
+  it("should expose matcher for symbol", function() {
+    assert.equal(typeof morphic.symbol, "function");
+  });
+
+  it("should expose matcher for function", function() {
+    assert.equal(typeof morphic.function, "function");
+  });
+
   it("should expose either matcher", function() {
     assert.equal(typeof morphic.either, "function");
   });
 
   it("should expose literally matcher", function() {
     assert.equal(typeof morphic.literally, "function");
+  });
+
+  it("should expose anything matcher", function() {
+    assert.equal(typeof morphic.anything, "function");
   });
 
   it("should let a user create a custom matcher", function() {

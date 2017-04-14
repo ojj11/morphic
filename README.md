@@ -57,6 +57,14 @@ assert.equal(
   }),
   "GitHub, Inc");
 
+// and even on unexpected, but coercible, input such as a name in an array:
+assert.equal(
+  getName({
+    title: "Atlas Shrugged",
+    author: ["Ayn Rand"]
+  }),
+  "Ayn Rand");
+
 // and see it falling back gracefully:
 assert.equal(
   getName(123),
@@ -109,19 +117,59 @@ Returns a matcher that matches `x == undefined`
 
 ##### `morphic.Object([name])`
 
-Returns a matcher that matches something that can be coerced to an Object
+Returns a matcher that matches something that can be coerced to an Object, when
+using multiple matchers you might want to use the exact type match companion
+`morphic.object([name])`.
 
 ##### `morphic.Boolean([name])`
 
-Returns a matcher that matches something that can be coerced to a Boolean
+Returns a matcher that matches something that can be coerced to a Boolean, when
+using multiple matchers you might want to use the exact type match companion
+`morphic.boolean([name])`.
 
 ##### `morphic.Number([name])`
 
-Returns a matcher that matches something that can be coerced to a Number
+Returns a matcher that matches something that can be coerced to a Number, when
+using multiple matchers you might want to use the exact type match companion
+`morphic.number([name])`.
 
 ##### `morphic.String([name])`
 
-Returns a matcher that matches something that can be coerced to a String
+Returns a matcher that matches something that can be coerced to a String, when
+using multiple matchers you might want to use the exact type match companion
+`morphic.string([name])`.
+
+##### `morphic.object([name])`
+
+Returns a matcher that matches something that must be an object, it will not
+attempt to type coerce the input. For a more liberal matcher, use the
+Capitalised companion `morphic.Object([name])`.
+
+##### `morphic.boolean([name])`
+
+Returns a matcher that matches something that must be an boolean, it will not
+attempt to type coerce the input. For a more liberal matcher, use the
+Capitalised companion `morphic.Boolean([name])`.
+
+##### `morphic.number([name])`
+
+Returns a matcher that matches something that must be a number, it will not
+attempt to type coerce the input. For a more liberal matcher, use the
+Capitalised companion `morphic.Number([name])`.
+
+##### `morphic.string([name])`
+
+Returns a matcher that matches something that must be an string, it will not
+attempt to type coerce the input. For a more liberal matcher, use the
+Capitalised companion `morphic.String([name])`.
+
+##### `morphic.symbol([name])`
+
+Returns a matcher that matches something that must be a symbol.
+
+##### `morphic.function([name])`
+
+Returns a matcher that matches something that must be a function.
 
 ##### `morphic.either(options, [name])`
 
@@ -192,6 +240,42 @@ Where the above matchers aren't enough a new one can be defined using:
 
 `myMatcher` is now similar to the above matchers, use it in the same way with
 `myMatcher([name])`
+
+## Troubleshooting common errors
+
+Morphic will throw a couple of different errors. This section covers how to
+troubleshoot them.
+
+### *2,3,4,...* methods match on the input ...
+
+This occurs when more than a single method matches the input. Each matching
+method will be listed at the bottom of the stack trace.
+
+Common pitfalls that can cause this error are using matchers that *overmatch*
+the input, such as using two Capitalised matchers which will try to type coerce:
+
+```javascript
+var overMatches = new morphic();
+overMatches.with(morphic.String()).return(0);
+overMatches.with(morphic.Number()).return(1);
+overMatches(1);
+```
+
+This example will throw because the input 1 can be coerced to a string or a
+number, therefore both methods are valid options. Use a lowercase method such
+as `morphic.string(...)` or `morphic.number(...)`.
+
+Another pitfalls is to use `morphic.anything()` which will match anything,
+including undefined and null. Use undefined or null explicitly when you don't
+want something to exist.
+
+### No methods matched input ...
+
+Using a fallback can side step this issue, see the documentation for
+[`myMethod.otherwise()...`](#mymethodotherwise).
+
+Check that the input is well formed, and make sure that the method isn't being
+called before any implementations are added.
 
 ## Running tests
 

@@ -38,6 +38,14 @@ describe("implementations", function() {
       }),
       "GitHub, Inc");
 
+    // and even on unexpected, but coercible, input such as a name in an array:
+    assert.equal(
+      getName({
+        title: "Atlas Shrugged",
+        author: ["Ayn Rand"]
+      }),
+      "Ayn Rand");
+
     // and see it falling back gracefully:
     assert.equal(
       getName(123),
@@ -76,7 +84,7 @@ describe("implementations", function() {
     });
 
     getIfs.with({
-      condition: morphic.String("if")
+      condition: morphic.string("if")
     }).returnNamedMatch("if")
 
     // and to fallback gracefully:
@@ -215,13 +223,49 @@ describe("implementations", function() {
     var tooAmbigiousFunction = new morphic();
 
     tooAmbigiousFunction.with("hello").return(0);
-    tooAmbigiousFunction.with(morphic.String()).return(1);
+    tooAmbigiousFunction.with(morphic.string()).return(1);
 
     assert.throws(function() {
       // This is both the literal "hello" and also a string, so what's the right
       // output?
       tooAmbigiousFunction("hello");
     }, /2 methods match/);
+
+  });
+
+  it("should type-coerce input only when Capitalised matchers used", function() {
+
+    var tooAmbigiousFunction = new morphic();
+
+    // Using Capitalised matchers will cause morphic to try and type coerce the
+    // input which can lead to over-matching:
+    tooAmbigiousFunction.with(morphic.Number()).return(0);
+    tooAmbigiousFunction.with(morphic.Object()).return(1);
+
+    assert.throws(function() {
+      // [1] can both be coerced to an object or to a number:
+      tooAmbigiousFunction([1]);
+    }, /2 methods match/);
+
+    assert.throws(function() {
+      // even 1 can be coerced to an object or to a number:
+      tooAmbigiousFunction(1);
+    }, /2 methods match/);
+
+  });
+
+  it("shouldn't type-coerce input when lowercase matchers used", function() {
+
+    var okFunction = new morphic();
+
+    okFunction.with(morphic.number("num")).return("num");
+    okFunction.with(morphic.string("str")).return("str");
+
+    assert.equal("num", okFunction(5));
+    assert.equal("str", okFunction("5"));
+    assert.throws(function() {
+      okFunction(["hi"]);
+    }, /No methods/);
 
   });
 });

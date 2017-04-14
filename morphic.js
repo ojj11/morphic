@@ -3,6 +3,7 @@ var defaultGenerateMatchers = require("./destructure.js").generateMatchers;
 var defaultGenerateNamedFieldExtractors = require("./destructure.js").generateNamedFieldExtractors;
 var defaultExtractNamedFields = require("./destructure.js").extractNamedFields;
 var matchers = require("./matchers.js");
+var util = require("util");
 
 function putRecord(sink, namedFields, action) {
   sink({
@@ -47,9 +48,13 @@ function morphic(options) {
   var generateNamedFieldExtractors = optionsIn.generateNamedFieldExtractors || defaultGenerateNamedFieldExtractors;
   var extractNamedFields = optionsIn.extractNamedFields || defaultExtractNamedFields;
 
+  putRecord(matcher.useFallback.bind(matcher), [], function() {
+    throw new Error("No methods matched input " + util.inspect(arguments));
+  });
+
   var morphicFunction = function morphicFunction() {
     var match = matcher.getRecordFromInput(arguments);
-    var extractedFields = extractNamedFields(match.namedFields, arguments);
+    var extractedFields = extractNamedFields(match.namedFields || [], arguments);
     var args = [extractedFields].concat(Array.from(arguments));
     var action = match.action;
     return action.apply(this, args);
@@ -81,8 +86,14 @@ types.forEach(function(type) {
   morphic[type] = matchers.matchType.bind(undefined, type);
 });
 
+var typeExact = ["string", "number", "boolean", "object", "symbol", "function"];
+typeExact.forEach(function(type) {
+  morphic[type] = matchers.matchTypeExactly.bind(undefined, type);
+});
+
 morphic.either = matchers.matchEither;
 morphic.literally = matchers.matchLiteral;
+morphic.anything = matchers.matchAnything;
 morphic.makeMatcher = matchers.makeUserFunction;
 
 module.exports = morphic;

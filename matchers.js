@@ -47,6 +47,35 @@ function matchType(type, name, path) {
 
 matchType.prototype = matcherPrototype;
 
+function matchTypeExactly(type, name, path) {
+  if (this == global) {
+    return new matchTypeExactly(type, name, path);
+  }
+  this.path = path;
+  this.typeShortcut = 6;
+  this.name = name;
+  this.matcher = function(obj) {
+    return typeof obj == type;
+  };
+  this.type = type;
+}
+
+matchTypeExactly.prototype = matcherPrototype;
+
+function matchAnything(name, path) {
+  if (this == global) {
+    return new matchAnything(name, path);
+  }
+  this.path = path;
+  this.typeShortcut = 7;
+  this.name = name;
+  this.matcher = function(obj) {
+    return true;
+  };
+}
+
+matchAnything.prototype = matcherPrototype;
+
 function matchEither(options, name, path) {
   if (this == global) {
     return new matchEither(options, name, path);
@@ -101,6 +130,8 @@ function isMatcher(obj) {
 
 module.exports = {
   matchType: matchType,
+  matchTypeExactly: matchTypeExactly,
+  matchAnything: matchAnything,
   matchEither: matchEither,
   makeUserFunction: makeUserFunction,
   matchLiteral: matchLiteral,
