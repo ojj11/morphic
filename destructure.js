@@ -7,7 +7,7 @@ function flattenList(arg) {
 }
 
 function generateMatchersInner(matchers, input, path) {
-  if (typeof input == "object") {
+  if (input != null && typeof input == "object") {
     if (matchers.isMatcher(input)) {
       // this is already a matcher, just update paths and return:
       return [input.withPath(path)];

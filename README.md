@@ -11,7 +11,6 @@ represented in the arguments
 
     Author: Olli Jones
     License: MIT
-    Version: 1.0.0
 
 ```
 npm install morphic --save
