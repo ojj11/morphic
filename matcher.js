@@ -98,8 +98,14 @@ matcher.prototype = {
         }
       }
       if (!isMatch) {
-        // eliminate this
-        currentGuess = currentGuess.and(this.stackHits[question].clone().not());
+        // eliminate this -
+        // make a negative bitset first, then unset the bits with xor, that way
+        // we're not falling into the issue where we're "and"ing with different
+        // sized bitsets
+        var cantBeBitSet = new bitset()
+          .setRange(0, this.calls.length)
+          .xor(this.stackHits[question]);
+        currentGuess = currentGuess.and(cantBeBitSet);
       }
       if (currentGuess.isEmpty()) {
         // nothing matches:

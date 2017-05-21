@@ -268,4 +268,18 @@ describe("implementations", function() {
     }, /No methods/);
 
   });
+
+  it("work for more than 32 methods", function() {
+
+    var multimethod = new morphic();
+
+    for (var i = 0; i < 64; i += 1) {
+      multimethod.with(i).return(i);
+    }
+
+    for (var j = 0; j < 64; j += 1) {
+      assert.equal(j, multimethod(j));
+    }
+
+  });
 });
