@@ -7,7 +7,7 @@
     "bitset.js": "^4.0.0"
   },
   "devDependencies": {
-    "mocha": "^3.2.0"
+    "mocha": "^4.0.0"
   },
   "scripts": {
     "test": "mocha test"
