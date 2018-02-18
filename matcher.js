@@ -1,6 +1,6 @@
 /* @flow */
 
-var bitset = require("bitset.js");
+var bitset = require("bitset");
 var util = require("util");
 
 function matcher(config) {
