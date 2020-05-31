@@ -1,8 +1,7 @@
 Morphic
 =======
 
-[![Build Status](https://travis-ci.org/ojj11/morphic.svg?branch=master)](https://travis-ci.org/ojj11/morphic)
-[![Greenkeeper badge](https://badges.greenkeeper.io/ojj11/morphic.svg)](https://greenkeeper.io/)
+![Node.js CI](https://github.com/ojj11/morphic/workflows/Node.js%20CI/badge.svg) [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fojj11%2Fmorphic.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fojj11%2Fmorphic?ref=badge_shield)
 
 **Support for writing ad-hoc polymorphic functions.**
 These are functions that will accept different types of arguments. They can
