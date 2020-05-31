@@ -31,7 +31,14 @@ matcher.prototype = {
       identity = stack[i].hash();
       matcher = this.stack[identity] || stack[i];
       this.stack[identity] = matcher;
-      hits = this.stackHits[identity] || new bitset(this.bitsetSize);
+      hits = this.stackHits[identity];
+      if (hits == undefined) {
+        hits = new bitset(this.bitsetSize);
+      } else {
+        // this is the only way this API allows us to increase the bitset size:
+        hits.MAX_BIT = this.bitsetSize;
+        hits = hits.and(hits);
+      }
       hits.set(index);
       this.stackHits[identity] = hits;
     }
@@ -41,7 +48,7 @@ matcher.prototype = {
   },
   getRecordFromInput: function(object) {
     var j, isMatch, record, subObject, question;
-    var currentGuess = new bitset(this.calls.length);
+    var currentGuess = new bitset(this.bitsetSize);
     if (this.calls.length > 0) {
       currentGuess.setRange(0, this.calls.length-1);
     }
@@ -106,7 +113,7 @@ matcher.prototype = {
         // make a negative bitset first, then unset the bits with xor, that way
         // we're not falling into the issue where we're "and"ing with different
         // sized bitsets
-        var cantBeBitSet = new bitset(this.calls.length);
+        var cantBeBitSet = new bitset(this.bitsetSize);
         cantBeBitSet.setRange(0, this.calls.length - 1)
         cantBeBitSet = cantBeBitSet.xor(this.stackHits[question]);
         currentGuess = currentGuess.and(cantBeBitSet);
