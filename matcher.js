@@ -1,6 +1,4 @@
-/* @flow */
-
-var bitset = require("bitset");
+var bitset = require("fast-bitset");
 var util = require("util");
 
 function matcher(config) {
@@ -18,8 +16,12 @@ function matcher(config) {
 }
 
 matcher.prototype = {
+  bitsetSize: 32,
   addRecord: function(stack, call) {
     var index = this.calls.push(call) - 1;
+    if (index >= this.bitsetSize) {
+      this.bitsetSize += 32;
+    }
     this.functionPositioning.push(new Error());
     var i = 0;
     var matcher;
@@ -29,8 +31,8 @@ matcher.prototype = {
       identity = stack[i].hash();
       matcher = this.stack[identity] || stack[i];
       this.stack[identity] = matcher;
-      hits = this.stackHits[identity] || new bitset(0);
-      hits = hits.set(index);
+      hits = this.stackHits[identity] || new bitset(this.bitsetSize);
+      hits.set(index);
       this.stackHits[identity] = hits;
     }
   },
@@ -39,16 +41,18 @@ matcher.prototype = {
   },
   getRecordFromInput: function(object) {
     var j, isMatch, record, subObject, question;
-    var currentGuess = new bitset()
+    var currentGuess = new bitset(this.calls.length);
     if (this.calls.length > 0) {
-      currentGuess = currentGuess.setRange(0, this.calls.length-1);
+      currentGuess.setRange(0, this.calls.length-1);
     }
     var questions = Object.keys(this.stack);
     while (questions.length > 0) {
       question = questions.pop();
       record = this.stack[question];
+      // increase our existing stack size if necessary before applying `and` op:
+      this.stackHits[question].MAX_BIT = this.bitsetSize;
       // check that doing this will reduce our search space:
-      if (this.stackHits[question].clone().and(currentGuess).isEmpty()) {
+      if (this.stackHits[question].and(currentGuess).isEmpty()) {
         // there set union is false
         continue;
       }
@@ -102,9 +106,9 @@ matcher.prototype = {
         // make a negative bitset first, then unset the bits with xor, that way
         // we're not falling into the issue where we're "and"ing with different
         // sized bitsets
-        var cantBeBitSet = new bitset()
-          .setRange(0, this.calls.length)
-          .xor(this.stackHits[question]);
+        var cantBeBitSet = new bitset(this.calls.length);
+        cantBeBitSet.setRange(0, this.calls.length - 1)
+        cantBeBitSet = cantBeBitSet.xor(this.stackHits[question]);
         currentGuess = currentGuess.and(cantBeBitSet);
       }
       if (currentGuess.isEmpty()) {
@@ -112,16 +116,16 @@ matcher.prototype = {
         break;
       }
     }
-    if (currentGuess.cardinality() == 1) {
+    if (currentGuess.getCardinality() == 1) {
       // one method matches:
-      return this.calls[currentGuess.lsb()];
+      return this.calls[currentGuess.nextSetBit(0)];
     }
-    if (currentGuess.cardinality() == 0) {
+    if (currentGuess.getCardinality() == 0) {
       // nothing matches:
       return this.alternative;
     }
     throw new HelpfulError(
-      currentGuess.cardinality() + " methods match on the input\n" + util.inspect(object),
+      currentGuess.getCardinality() + " methods match on the input\n" + util.inspect(object),
       currentGuess,
       this.functionPositioning);
   }

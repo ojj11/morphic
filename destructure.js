@@ -1,5 +1,3 @@
-/* @flow */
-
 function flattenList(arg) {
   var out = [];
   arg.forEach(function(list) {Array.prototype.push.apply(out, list);});
