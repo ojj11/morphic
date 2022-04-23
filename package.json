@@ -1,6 +1,6 @@
 {
   "name": "morphic",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "description": "Ad-hoc polymorphism / pattern matching / destructuring for function parameters",
   "main": "morphic.js",
   "dependencies": {
